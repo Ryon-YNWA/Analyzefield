@@ -21,6 +21,38 @@ class SofaScore(page_accessor.PageAccessor):
         self.__home_manager = ''
         self.__away_manager = ''
 
+    def __get_df_match_info(self):
+
+        soup = BeautifulSoup(self._driver.page_source.encode('utf-8'),  self.__parser)
+        match_html = soup.find_all('div', {'class': 'TabsWrapper__Wrapper-sc-1lsyq24-0 loCAKW'})[0]
+
+        home_match_info = {}
+        away_match_info = {}
+        for stats in match_html.find_all('div', {'class': 'Cell-sc-t6h3ns-0 styles__StatisticsItemCell-sc-1imujgi-1 doxblE'}):
+            stats = stats.find_all('div', {'class': ['styles__StatisticsItemContent-sc-1imujgi-0']})
+            home_match_info[stats[1].text] = stats[0].text
+            away_match_info[stats[1].text] = stats[2].text
+
+        return home_match_info, away_match_info
+
+    def __scrape_match_info(self):
+
+        self._driver.find_element(by=By.XPATH, value='//a[text()="ALL"]').click()
+        df_home_all_match_info, df_away_all_match_info = self.__get_df_match_info()
+
+        self._driver.find_element(by=By.XPATH, value='//a[text()="1ST"]').click()
+        df_home_1st_match_info, df_away_1st_match_info = self.__get_df_match_info()
+
+        self._driver.find_element(by=By.XPATH, value='//a[text()="2ND"]').click()
+        df_home_2nd_match_info, df_away_2nd_match_info = self.__get_df_match_info()
+
+        self.__logger.info(df_home_all_match_info)
+        self.__logger.info(df_away_all_match_info)
+        self.__logger.info(df_home_1st_match_info)
+        self.__logger.info(df_away_1st_match_info)
+        self.__logger.info(df_home_2nd_match_info)
+        self.__logger.info(df_away_2nd_match_info)
+
     def __scrape_player_list(self):
 
         # Lineupsを選択
@@ -118,6 +150,7 @@ class SofaScore(page_accessor.PageAccessor):
         # Player Statisticsを選択
         self.__scrape_player_statistics()
         self.__scrape_player_list()
+        self.__scrape_match_info()
 
         self._close_driver()
 

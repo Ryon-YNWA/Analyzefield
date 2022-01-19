@@ -1,4 +1,5 @@
 import yaml
+import datetime
 from logging import config, getLogger
 
 import pandas as pd
@@ -20,6 +21,25 @@ class SofaScore(page_accessor.PageAccessor):
         self.__players = {}
         self.__home_manager = ''
         self.__away_manager = ''
+
+    def __scrape_match_detail(self):
+
+        soup = BeautifulSoup(self._driver.page_source.encode('utf-8'),  self.__parser)
+        match__info_element = soup.find('div', {'class': 'styles__MatchInfoWrapper-sc-s032oy-0 guUPVs'})
+
+        element = match__info_element.find_all('div', {'class': ['dKtWQT']})
+
+        self.__start_date = datetime.datetime.strptime(element[0].text.replace('Start date: ', ''), '%d %b %Y %H:%M')
+        self.__location = element[1].text.split('Venue')[0].replace('Location: ', '')
+        self.__venue = element[1].text.split('Venue: ')[1]
+        self.__referee = element[2].text.split(',')[0].replace('Referee: ', '')
+        self.__referee_country = element[2].text.split(', ')[1]
+
+        self.__logger.info(self.__start_date)
+        self.__logger.info(self.__location)
+        self.__logger.info(self.__venue)
+        self.__logger.info(self.__referee)
+        self.__logger.info(self.__referee_country)
 
     def __get_df_match_info(self):
 
@@ -147,7 +167,7 @@ class SofaScore(page_accessor.PageAccessor):
 
         self._screenshot('snap')
 
-        # Player Statisticsを選択
+        self.__scrape_match_detail()
         self.__scrape_player_statistics()
         self.__scrape_player_list()
         self.__scrape_match_info()

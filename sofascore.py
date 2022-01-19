@@ -5,10 +5,10 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 
-import scrape
+import page_accessor
 
 
-class Sofascore(scrape.Scraper):
+class SofaScore(page_accessor.PageAccessor):
 
     def __init__(self, url):
         super().__init__()
@@ -127,5 +127,5 @@ if __name__ == '__main__':
         _config = yaml.safe_load(yml)
     config.dictConfig(_config)
 
-    s = Sofascore('https://www.sofascore.com/brentford-liverpool/Usab')
-    s.run()
+    scraper = SofaScore('https://www.sofascore.com/brentford-liverpool/Usab')
+    scraper.run()

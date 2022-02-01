@@ -269,7 +269,7 @@ if __name__ == '__main__':
         _config = yaml.safe_load(yml)
     config.dictConfig(_config)
 
-    sso = SofaScore('https://www.sofascore.com/brentford-liverpool/Usab')
+    sso = SofaScore('https://www.sofascore.com/liverpool-fc-porto/Usckb')
     sso.run()
 
     import assets.database as db

@@ -1,4 +1,3 @@
-from nis import match
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -129,33 +128,13 @@ def get_player_stats(match_id):
     return player_name, passes, pass_succeeds
 
 def plot_data(fig, player_name, passes, pass_succeeds, is_first):
-    # if normalize == '原系列':
-    #     y = df[company_name]
-    #     fig.add_annotation(text=f"<b>{company_name}",
-    #                     x=df.iloc[0]['Date'],
-    #                     y=y.iloc[0],
-    #                     arrowcolor='white',
-    #                     font=dict(color=color,
-    #                             size=15)
-    #                     )
-    
-    # elif normalize == '基準化':
-    #     y = df[company_name] / df.iloc[0][company_name] * 100
-    #     fig.add_annotation(text=f"<b>{company_name}",
-    #                     showarrow=False,
-    #                     x=df.iloc[0]['Date'],
-    #                     y=90 + is_first * 20,
-    #                     font=dict(color=color,
-    #                                 size=15)
-                        # )
-    
+
     fig.add_trace(go.Bar(x=player_name,
                             y=passes,
                             name='passes',
                         opacity=0.5,
                         yaxis='y2')
                     )
-
 
 @app.callback(
     Output(component_id='passes_graph', component_property='children'),
@@ -167,29 +146,6 @@ def update_graph(match_id):
     
     fig = go.Figure()
     plot_data(fig, player_name, passes, pass_succeeds, is_first=True)
-
-    # fig.update_layout(title=f'{company_name_1}の株価推移',
-    #                 showlegend=False,
-    #                 plot_bgcolor='white',
-    #                 width=1000,
-    #                 height=500,
-    #                 )
-    # fig.update_xaxes(showline=True,
-    #                 linewidth=1,
-    #                 linecolor='lightgrey',
-    #                 color='grey',
-    #                 ticks='inside',
-    #                 ticklen=5,
-    #                 tickwidth=2,
-    #                 tickcolor='lightgrey'
-    #                 )
-    # fig.update_yaxes(title=dict(text='stock price',
-    #                             font_color='grey'),
-    #                 showline=True,
-    #                 linewidth=1,
-    #                 linecolor='lightgrey',
-    #                 color='grey'
-    #                 )
 
     return dcc.Graph(figure=fig)
 
